@@ -27,16 +27,14 @@ class StackOverflowImporter:
     def create_module(cls, spec):
         """Create a built-in module"""
         print("create_module", spec)
-        ns = {"__spec__": spec}
-        print("exec", spec.code)
-        exec(spec.code, ns)
-        return ns
+        return spec
 
     @classmethod
     def exec_module(cls, module=None):
         """Exec a built-in module"""
         print(module, type(module), dir(module))
-        return module
+        print("exec", module.code)
+        exec(module.code, module.__dict__)
 
     @classmethod
     def get_code(cls, fullname):
