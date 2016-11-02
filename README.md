@@ -5,7 +5,6 @@ Do you ever feel like all you're doing is copy/pasting from Stack Overflow?
 Yeah. I thought so. Let's take it one step further.
 
 ```python
-Python 3.5.0 (v3.5.0:374f501f4567, Sep 13 2015, 02:16:59) [MSC v.1900 32 bit (Intel)] on win32
 >>> from stackoverflow import quick_sort, split_into_chunks
 
 >>> print(quick_sort.sort([1, 3, 2, 5, 4]))
