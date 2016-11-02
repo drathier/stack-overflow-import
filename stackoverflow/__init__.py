@@ -1,61 +1,107 @@
+import ast
+import html
+import re
 import sys
+from importlib._bootstrap import spec_from_loader
 
-import pip
-
-
-class IntermediateModule:
-    """Module for paths like `github_com.nvbn`."""
-
-    def __init__(self, fullname):
-        self.__package__ = fullname
-        self.__path__ = fullname.split('.')
-        self.__name__ = fullname
+import requests
 
 
-class GithubComFinder:
-    """Handles `github_com....` modules."""
+class StackOverflowImporter:
+    """Concrete implementation of SourceLoader using the file system."""
 
-    def find_module(self, module_name, package_path):
-        if module_name.startswith('github_com'):
-            return GithubComLoader()
+    API_URL = "https://api.stackexchange.com"
 
+    @classmethod
+    def find_spec(cls, fullname, path=None, target=None):
+        spec = spec_from_loader(fullname, cls, origin='hell')
+        spec.__license__ = "CC BY-SA 3.0"
+        spec._url = cls._fetch_url(spec.name)
+        spec._code, spec.__author__ = cls._fetch_code(spec._url)
+        return spec
 
-class GithubComLoader:
-    """Installs and imports modules from github."""
+    @classmethod
+    def create_module(cls, spec):
+        """Create a built-in module"""
+        return spec
 
-    def _is_installed(self, fullname):
+    @classmethod
+    def exec_module(cls, module=None):
+        """Exec a built-in module"""
         try:
-            self._import_module(fullname)
-            return True
-        except ImportError:
-            return False
+            exec(module._code, module.__dict__)
+        except:
+            print(module._url)
+            print(module._code)
+            raise
 
-    def _import_module(self, fullname):
-        actual_name = '.'.join(fullname.split('.')[2:])
-        return __import__(actual_name)
+    @classmethod
+    def get_code(cls, fullname):
+        return compile(cls._fetch_code(cls._fetch_url(fullname)), 'StackOverflow.com/' + fullname, 'exec')
 
-    def _install_module(self, fullname):
-        if not self._is_installed(fullname):
-            url = fullname.replace('.', '/') \
-                .replace('github_com', 'git+https://github.com', 1)
-            pip.main(['install', url])
+    @classmethod
+    def get_source(cls, fullname):
+        return cls.get_code(fullname)
 
-    def _is_repository_path(self, fullname):
-        return fullname.count('.') == 2
+    @classmethod
+    def is_package(cls, fullname):
+        return False
 
-    def _is_intermediate_path(self, fullname):
-        return fullname.count('.') < 2
+    ############################
 
-    def load_module(self, fullname):
-        if self._is_repository_path(fullname):
-            self._install_module(fullname)
+    @classmethod
+    def _fetch_url(cls, query):
+        query = query.lower().replace("stackoverflow.", "").replace("_", " ")
+        ans = requests.get(cls.API_URL + "/search", {
+            "order": "desc",
+            "sort": "votes",
+            "tagged": "python",
+            "site": "stackoverflow",
+            "intitle": query,
+        }).json()
+        if not ans["items"]:
+            raise ImportError("Couldn't find any question matching `" + query + "`")
+        return ans["items"][0]["link"]
 
-        if self._is_intermediate_path(fullname):
-            module = IntermediateModule(fullname)
-        else:
-            module = self._import_module(fullname)
+    @classmethod
+    def _fetch_code(cls, url):
+        q = requests.get(url)
+        return cls._find_code_in_html(q.text)
 
-        sys.modules[fullname] = module
+    @staticmethod
+    def _find_code_in_html(s):
+        answers = re.findall(r'<div id="answer-.*?</table', s, re.DOTALL)  # come get me, Zalgo
+
+        def votecount(x):
+            """
+            Return the negative number of votes a question has.
+            Might return the negative question id instead if its less than 100k. That's a feature.
+            """
+            r = int(re.search(r"\D(\d{1,5})\D", x).group(1))
+            return -r
+
+        for answer in sorted(answers, key=votecount):
+            codez = re.finditer(r"<pre[^>]*>[^<]*<code[^>]*>((?:\s|[^<]|<span[^>]*>[^<]+</span>)*)</code></pre>", answer)
+            codez = map(lambda x: x.group(1), codez)
+            for code in sorted(codez, key=lambda x: -len(x)):  # more code is obviously better
+                # don't forget attribution
+                author = s
+                author = author[author.find(code):]
+                author = author[:author.find(">share<")]
+                author = author[author.rfind('<a href="') + len('<a href="'):]
+                author_link = author[:author.find('"'):]
+                author_link = "https://stackoverflow.com" + author_link
+
+                # fetch that code
+                code = html.unescape(code)
+                code = re.sub(r"<[^>]+>([^<]*)<[^>]*>", "\1", code)
+                try:
+                    ast.parse(code)
+                    return code, author_link  # it compiled! uhm, parsed!
+                except:
+                    pass
+        else:  # https://stackoverflow.com/questions/9979970/why-does-python-use-else-after-for-and-while-loops
+            raise ImportError("This question ain't got no good code.")
 
 
-sys.meta_path.append(GithubComFinder())
+sys.meta_path.append(StackOverflowImporter())
