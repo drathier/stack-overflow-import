@@ -8,6 +8,12 @@ import requests
 
 
 class StackOverflowImporter:
+    """ 
+    `from stackoverflow import quick_sort` will go through the search results 
+    of `[python] quick sort` looking for the largest code block that doesn't 
+    syntax error in the highest voted answer from the highest voted question 
+    and return it as a module, or raise ImportError if there's no code at all.
+    """
     API_URL = "https://api.stackexchange.com"
 
     @classmethod
