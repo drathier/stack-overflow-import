@@ -4,6 +4,12 @@ Do you ever feel like all you're doing is copy/pasting from Stack Overflow?
 
 Let's take it one step further.
 
+`from stackoverflow import quick_sort` will go through the search results 
+of `[python] quick sort` looking for the largest code block that doesn't 
+syntax error in the highest voted answer from the highest voted question 
+and return it as a module. If that answer doesn't have any valid python 
+code, it checks the next highest voted answer for code blocks. 
+
 ```python
 >>> from stackoverflow import quick_sort, split_into_chunks
 
