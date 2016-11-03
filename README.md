@@ -2,7 +2,7 @@
 
 Do you ever feel like all you're doing is copy/pasting from Stack Overflow?
 
-Yeah. I thought so. Let's take it one step further.
+Let's take it one step further.
 
 ```python
 >>> from stackoverflow import quick_sort, split_into_chunks
@@ -24,3 +24,5 @@ I wonder who made split_into_chunks https://stackoverflow.com/a/35107113
 but what's the license? Can I really use this? CC BY-SA 3.0
 >>> assert("nice, attribution!")
 ```
+
+This module is PSF-licensed as it uses multiple lines of code from the python standard library.

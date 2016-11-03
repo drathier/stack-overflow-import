@@ -8,8 +8,6 @@ import requests
 
 
 class StackOverflowImporter:
-    """Concrete implementation of SourceLoader using the file system."""
-
     API_URL = "https://api.stackexchange.com"
 
     @classmethod
