@@ -37,5 +37,5 @@ Let’s take it one step further.
     but what's the license? Can I really use this? CC BY-SA 3.0
     >>> assert("nice, attribution!")
 
-This module is PSF-licensed as it uses multiple lines of code from the
-python standard library.
+This module is PSF-licensed as I blatantly copied multiple lines of code from the
+Python standard library.
