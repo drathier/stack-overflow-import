@@ -32,3 +32,9 @@ but what's the license? Can I really use this? CC BY-SA 3.0
 ```
 
 This module is PSF-licensed as it uses multiple lines of code from the python standard library.
+
+## Install
+
+Made for Python 3. You need to install the `requests` module:
+
+    pip3 install requests
