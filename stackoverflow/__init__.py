@@ -7,7 +7,7 @@ from importlib._bootstrap import spec_from_loader
 import requests
 
 
-class StackOverflowImporter:
+class StackOverflowImporter(object):
     """ 
     `from stackoverflow import quick_sort` will go through the search results 
     of `[python] quick sort` looking for the largest code block that doesn't 
