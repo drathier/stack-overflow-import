@@ -22,7 +22,7 @@ setup(
     url='https://github.com/drathier/stack-overflow-import',
     author='https://github.com/drathier',
     author_email='fille.haglund@hotmail.com',
-    license='PSFL',
+    license='WTFPL',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
