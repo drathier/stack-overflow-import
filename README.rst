@@ -24,13 +24,6 @@ Let’s take it one step further.
     [1, 2, 3, 4, 5]
     >>> print(list(split_into_chunks.chunk("very good chunk func")))
     ['very ', 'good ', 'chunk', ' func']
-    >>> print("gotta take a break")
-    gotta take a break
-    >>> from time import time
-    >>> t1 = time()
-    >>> from stackoverflow import time_delay
-    >>> print("that's enough, let's continue coding", time() - t1)
-    that's enough, let's continue coding 5.7283220291137695
     >>> print("I wonder who made split_into_chunks", split_into_chunks.__author__)
     I wonder who made split_into_chunks https://stackoverflow.com/a/35107113
     >>> print("but what's the license? Can I really use this?", quick_sort.__license__)
