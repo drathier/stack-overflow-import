@@ -22,10 +22,13 @@ Let’s take it one step further.
 
     >>> print(quick_sort.sort([1, 3, 2, 5, 4]))
     [1, 2, 3, 4, 5]
+    
     >>> print(list(split_into_chunks.chunk("very good chunk func")))
     ['very ', 'good ', 'chunk', ' func']
+    
     >>> print("I wonder who made split_into_chunks", split_into_chunks.__author__)
     I wonder who made split_into_chunks https://stackoverflow.com/a/35107113
+    
     >>> print("but what's the license? Can I really use this?", quick_sort.__license__)
     but what's the license? Can I really use this? CC BY-SA 3.0
     >>> assert("nice, attribution!")
