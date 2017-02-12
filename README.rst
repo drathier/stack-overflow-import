@@ -33,5 +33,6 @@ Let’s take it one step further.
     but what's the license? Can I really use this? CC BY-SA 3.0
     >>> assert("nice, attribution!")
 
-This module is WTFPL-licensed as I blatantly copied multiple lines of code from the
-Python standard library.
+This module is licensed under whatever license you want it to be as 
+long as the license is compatible with the fact that I blatantly 
+copied multiple lines of code from the Python standard library.
