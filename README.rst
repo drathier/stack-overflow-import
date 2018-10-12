@@ -1,6 +1,17 @@
 StackOverflow Importer
 ======================
 
+Update to take the code of at most 10 answers into consider
+
+.. code:: python
+
+    >>> from stackoverflow import quick_sort
+
+    >>> print(quick_sort.quickSort([1, 3, 2, 5, 4]))
+    [1, 2, 3, 4, 5]
+
+======================
+
 Do you ever feel like all you’re doing is copy/pasting from Stack
 Overflow?
 
