@@ -65,16 +65,21 @@ class StackOverflowImporter:
         }).json()
         if not ans["items"]:
             raise ImportError("Couldn't find any question matching `" + query + "`")
-        return ans["items"][0]["link"]
+        # return ans["items"][0]["link"]
+        return ans["items"]
 
     @classmethod
-    def _fetch_code(cls, url):
-        q = requests.get(url)
-        return cls._find_code_in_html(q.text)
+    def _fetch_code(cls, anses):
+        ans_html = []
+        for ans in anses[:10]:
+            ans_html.append(requests.get(ans["link"]))
+        return cls._find_code_in_html(ans_html)
 
     @staticmethod
-    def _find_code_in_html(s):
-        answers = re.findall(r'<div id="answer-.*?</table', s, re.DOTALL)  # come get me, Zalgo
+    def _find_code_in_html(ans_html):
+        answers = []
+        for an_html in ans_html:
+            answers.extend(re.findall(r'<div id="answer-.*?</table', an_html.text, re.DOTALL))  # come get me, Zalgo
 
         def votecount(x):
             """
@@ -89,7 +94,7 @@ class StackOverflowImporter:
             codez = map(lambda x: x.group(1), codez)
             for code in sorted(codez, key=lambda x: -len(x)):  # more code is obviously better
                 # don't forget attribution
-                author = s
+                author = an_html.text
                 author = author[author.find(code):]
                 author = author[:author.find(">share<")]
                 author = author[author.rfind('<a href="') + len('<a href="'):]
