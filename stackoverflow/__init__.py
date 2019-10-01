@@ -2,10 +2,10 @@ import ast
 import html
 import re
 import sys
+from copy import copy
 from importlib._bootstrap import spec_from_loader
 
 import requests
-
 
 class StackOverflowImporter:
     """ 
@@ -19,9 +19,8 @@ class StackOverflowImporter:
     @classmethod
     def find_spec(cls, fullname, path=None, target=None):
         spec = spec_from_loader(fullname, cls, origin='hell')
-        spec.__license__ = "CC BY-SA 3.0"
-        spec._url = cls._fetch_url(spec.name)
-        spec._code, spec.__author__ = cls._fetch_code(spec._url)
+        spec.__license__ = "CC BY-SA 3.0"  # todo: fix this
+        spec._code, spec._url, spec.__author__ = cls.get_code_url_author(spec.name)
         return spec
 
     @classmethod
@@ -36,16 +35,24 @@ class StackOverflowImporter:
             exec(module._code, module.__dict__)
         except:
             print(module._url)
-            print(module._code)
+            print(module)
             raise
 
     @classmethod
-    def get_code(cls, fullname):
-        return compile(cls._fetch_code(cls._fetch_url(fullname)), 'StackOverflow.com/' + fullname, 'exec')
+    def get_code_url_author(cls, fullname):
+        urls = cls._fetch_urls(fullname)
+        for url in urls:
+            try:
+                code, author = cls._fetch_code(url)
+                return compile(code, 'StackOverflow.com/' + fullname, 'exec') , url, author
+            except ImportError:
+                pass
+        raise ImportError("This question ain't got no good code.")
+
 
     @classmethod
     def get_source(cls, fullname):
-        return cls.get_code(fullname)
+        return cls.get_code_url_author(fullname)[0]
 
     @classmethod
     def is_package(cls, fullname):
@@ -54,7 +61,7 @@ class StackOverflowImporter:
     ############################
 
     @classmethod
-    def _fetch_url(cls, query):
+    def _fetch_urls(cls, query):
         query = query.lower().replace("stackoverflow.", "").replace("_", " ")
         ans = requests.get(cls.API_URL + "/search", {
             "order": "desc",
@@ -65,7 +72,8 @@ class StackOverflowImporter:
         }).json()
         if not ans["items"]:
             raise ImportError("Couldn't find any question matching `" + query + "`")
-        return ans["items"][0]["link"]
+        items = ans["items"]
+        return [i["link"] for i in items]
 
     @classmethod
     def _fetch_code(cls, url):
@@ -74,7 +82,7 @@ class StackOverflowImporter:
 
     @staticmethod
     def _find_code_in_html(s):
-        answers = re.findall(r'<div id="answer-.*?</table', s, re.DOTALL)  # come get me, Zalgo
+        answers = re.findall(r'<div id="answer-.*<div class="answercell.*class="suggest-edit-post"', s, re.DOTALL)  # come get me, Zalgo
 
         def votecount(x):
             """
