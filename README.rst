@@ -6,9 +6,9 @@ Overflow?
 
 Let’s take it one step further.
 
-| ``from stackoverflow import quick_sort`` will go through the search
+| ``from stackoverflow import sort`` will go through the search
   results
-| of ``[python] quick sort`` looking for the largest code block that
+| of ``[python] sort`` looking for the largest code block that
   doesn’t
 | syntax error in the highest voted answer from the highest voted
   question
@@ -16,22 +16,22 @@ Let’s take it one step further.
   python
 | code, it checks the next highest voted answer for code blocks.
 
-.. code:: python
+.. code:: pytho
 
-    >>> from stackoverflow import quick_sort, split_into_chunks
+    from stackoverflow import sort
+    print(sort([3,1,2]))
+    print("I wonder who made sort", sort.__author__)
+    print("but what's the license? Can I really use this?", sort.__license__)
 
-    >>> print(quick_sort.sort([1, 3, 2, 5, 4]))
-    [1, 2, 3, 4, 5]
-    
-    >>> print(list(split_into_chunks.chunk("very good chunk func")))
-    ['very ', 'good ', 'chunk', ' func']
-    
-    >>> print("I wonder who made split_into_chunks", split_into_chunks.__author__)
-    I wonder who made split_into_chunks https://stackoverflow.com/a/35107113
-    
-    >>> print("but what's the license? Can I really use this?", quick_sort.__license__)
+    from stackoverflow import file_copy
+    print(file_copy("main.py", "main2.py"))
+
+    """ prints 
+    [1, 2, 3]
+    I wonder who made sort https://stackoverflow.com/a/49073645
     but what's the license? Can I really use this? CC BY-SA 3.0
-    >>> assert("nice, attribution!")
+    ████████████████████ [100.00%]main2.py 
+    """
 
 This module is licensed under whatever license you want it to be as 
 long as the license is compatible with the fact that I blatantly 
