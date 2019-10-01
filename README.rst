@@ -16,7 +16,7 @@ Let’s take it one step further.
   python
 | code, it checks the next highest voted answer for code blocks.
 
-.. code:: python
+.. code:: pytho
 
     from stackoverflow import sort
     print(sort.sort_iterable([3,1,2]))

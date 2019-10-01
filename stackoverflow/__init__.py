@@ -21,7 +21,23 @@ class StackOverflowImporter:
         spec = spec_from_loader(fullname, cls, origin='hell')
         spec.__license__ = "CC BY-SA 3.0"  # todo: fix this
         spec._code, spec._url, spec.__author__ = cls.get_code_url_author(spec.name)
+        cls.make_callable(spec)
         return spec
+    
+    @classmethod
+    def make_callable(cls, spec):
+        """ to be callable, your (copy of) __class__ must have a __call__ """
+        methods = spec._code.co_names
+        if methods:
+            spec.__class__ = copy(spec.__class__)
+            spec.__class__.method = methods[0]
+            def call(cls, *arg, **varg):
+                """ during find_spec, the method itself is not in cls -> dynamic calling """
+                method = cls.__getattribute__(cls.method)
+                return method(*arg, **varg)
+            spec.__class__.__call__ = call
+        else:
+            print("No module-calling avaiable, as co_names is empty")
 
     @classmethod
     def create_module(cls, spec):
