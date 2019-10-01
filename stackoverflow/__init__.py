@@ -30,7 +30,7 @@ class StackOverflowImporter:
         methods = spec._code.co_names
         if methods:
             spec.__class__ = copy(spec.__class__)
-            spec.__class__.method = methods[0]
+            spec.__class__.method = methods[-1]  # first methods can be imports like os, so take last!
             def call(cls, *arg, **varg):
                 """ during find_spec, the method itself is not in cls -> dynamic calling """
                 method = cls.__getattribute__(cls.method)
