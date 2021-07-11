@@ -4,6 +4,11 @@ StackOverflow Importer
 Do you ever feel like all you’re doing is copy/pasting from Stack
 Overflow?
 
+WARNING
+=======
+
+This is extremely dangerous, and will run arbitrary code from a world-editable website without first giving you any chance to review it.  If someone can — even temporarily — game the Stack Overflow search algorithm and you are using this, you are exposing yourself to the possibility of arbitrary remote code execution.  If you actually run this, please be sure to run it in a sandbox that does not have access to any sensitive data.  The bare minimum would be something like a Docker container with no volumes mounted; do NOT run it, for example, as a user with AWS credentials saved in your home directory.
+
 Let’s take it one step further.
 
 | ``from stackoverflow import quick_sort`` will go through the search
