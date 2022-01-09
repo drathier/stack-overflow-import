@@ -87,7 +87,7 @@ class StackOverflowImporter:
         for answer in sorted(answers, key=votecount):
             codez = re.finditer(r"<pre[^>]*>[^<]*<code[^>]*>((?:\s|[^<]|<span[^>]*>[^<]+</span>)*)</code></pre>", answer)
             codez = map(lambda x: x.group(1), codez)
-            for code in sorted(codez, key=lambda x: -len(x)):  # more code is obviously better
+            for code in sorted(codez, key=lambda x: len(x), reverse=True):  # more code is obviously better
                 # don't forget attribution
                 author = s
                 author = author[author.find(code):]
